@@ -1,0 +1,172 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: #f5f1eb;
+  --foreground: #3d2914;
+  --card: #ffffff;
+  --card-foreground: #3d2914;
+  --popover: #ffffff;
+  --popover-foreground: #3d2914;
+  --primary: #8b4513;
+  --primary-foreground: #ffffff;
+  --secondary: #d2b48c;
+  --secondary-foreground: #3d2914;
+  --muted: #f5f1eb;
+  --muted-foreground: #6b5b47;
+  --accent: #dda0dd;
+  --accent-foreground: #3d2914;
+  --destructive: #dc2626;
+  --border: #e5d5c8;
+  --input: #e5d5c8;
+  --ring: #8b4513;
+  --chart-1: #8b4513;
+  --chart-2: #d2b48c;
+  --chart-3: #dda0dd;
+  --chart-4: #f4a460;
+  --chart-5: #cd853f;
+  --sidebar: #f5f1eb;
+  --sidebar-foreground: #3d2914;
+  --sidebar-primary: #8b4513;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #d2b48c;
+  --sidebar-accent-foreground: #3d2914;
+  --sidebar-border: #e5d5c8;
+  --sidebar-ring: #8b4513;
+}
+
+.dark {
+  --background: #3d2914;
+  --foreground: #f5f1eb;
+  --card: #4a3319;
+  --card-foreground: #f5f1eb;
+  --popover: #4a3319;
+  --popover-foreground: #f5f1eb;
+  --primary: #d2b48c;
+  --primary-foreground: #3d2914;
+  --secondary: #6b5b47;
+  --secondary-foreground: #f5f1eb;
+  --muted: #6b5b47;
+  --muted-foreground: #a0927d;
+  --accent: #6b5b47;
+  --accent-foreground: #f5f1eb;
+  --destructive: #ef4444;
+  --border: #6b5b47;
+  --input: #6b5b47;
+  --ring: #d2b48c;
+  --chart-1: #d2b48c;
+  --chart-2: #8b4513;
+  --chart-3: #dda0dd;
+  --chart-4: #f4a460;
+  --chart-5: #cd853f;
+  --sidebar: #3d2914;
+  --sidebar-foreground: #f5f1eb;
+  --sidebar-primary: #d2b48c;
+  --sidebar-primary-foreground: #3d2914;
+  --sidebar-accent: #6b5b47;
+  --sidebar-accent-foreground: #f5f1eb;
+  --sidebar-border: #6b5b47;
+  --sidebar-ring: #d2b48c;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Fontes personalizadas */
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+.font-script {
+  font-family: 'Dancing Script', cursive;
+}
+
+.font-sans {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Estilos personalizados para o tema chocolate */
+.bg-chocolate-dark {
+  background-color: #8b4513;
+}
+
+.bg-chocolate-light {
+  background-color: #d2b48c;
+}
+
+.bg-pink-accent {
+  background-color: #dda0dd;
+}
+
+.text-chocolate-dark {
+  color: #3d2914;
+}
+
+.text-chocolate-light {
+  color: #d2b48c;
+}
+
+/* Gradientes */
+.bg-chocolate-gradient {
+  background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%);
+}
+
+.bg-hero-gradient {
+  background: linear-gradient(135deg, #8b4513 0%, #a0522d 50%, #d2b48c 100%);
+}
+
+/* Animações suaves */
+.transition-all {
+  transition: all 0.3s ease;
+}
+
+/* Hover effects */
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
