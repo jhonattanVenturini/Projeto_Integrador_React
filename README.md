@@ -1,3 +1,11 @@
+
+## Integrantes : 
+- Nome:  | RA:
+- Nome:  Jhonattan de Carvalho Romão Venturini | RA - 03.23.158791-3
+- Nome:  | RA:  
+- Nome:  | RA:
+- Nome:  | RA: 
+---
 # Choconessa - E-commerce de Chocolates 🍫
 
 Bem-vindo ao repositório oficial do Choconessa, um projeto de e-commerce completo para uma loja de chocolates artesanais. Este projeto é construído com um backend robusto em Python e um frontend moderno e reativo em React.
