@@ -1,6 +1,6 @@
 
 ## Integrantes : 
-- Nome: João Victor Aguiar  | RA:
+- Nome:  João Victor Aguiar  | RA: 03.23.159148-1
 - Nome:  Jhonattan de Carvalho Romão Venturini | RA - 03.23.158791-3
 - Nome:  | RA:  
 - Nome:  | RA:
