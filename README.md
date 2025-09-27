@@ -4,7 +4,7 @@
 - Nome:  Jhonattan de Carvalho Romão Venturini | RA - 03.23.158791-3
 - Nome:Eric Novais Silva  RA:03.23.119646-9  
 - Nome: Eder Novais Silva  | RA:03.23.119647-7
-- Nome:  | RA: 
+- Nome: Gabriel Henrique Ferraz | RA: 03.23.117683-2
 ---
 # Choconessa - E-commerce de Chocolates 🍫
 
