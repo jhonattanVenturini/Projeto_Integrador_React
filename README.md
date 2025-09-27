@@ -1,6 +1,6 @@
 
 ## Integrantes : 
-- Nome:  | RA: 03.23.159148-1
+- Nome:  João Victor Aguiar | RA: 03.23.159148-1
 - Nome:  Jhonattan de Carvalho Romão Venturini | RA - 03.23.158791-3
 - Nome:  Eder Novais Silva | RA: 03.23.119647-7
 - Nome: Eric Novais Silva | RA: 03.23.119646-9
