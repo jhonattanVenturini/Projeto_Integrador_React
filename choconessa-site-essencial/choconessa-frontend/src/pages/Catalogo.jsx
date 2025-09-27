@@ -65,11 +65,37 @@ const Catalogo = ({ user, onLoginRequired, onCartUpdate }) => {
 
   const bolos = products.filter(product => product.category === 'bolos');
   const trufas = products.filter(product => product.category === 'trufas');
+  const cones = products.filter(product => product.category === 'cones');
 
   return (
     <div className="catalogo-page py-16 bg-gray-50">
       <div className="container mx-auto px-4">
         <h2 className="text-5xl font-script text-center text-chocolate-dark mb-12">Nosso Catálogo</h2>
+
+            {/* Cones */}
+        <section className="mb-16">
+          <h3 className="text-4xl font-bold text-chocolate-dark mb-8 text-center md:text-left">Cones</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {cones.map(product => (
+              <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover-lift transition-all">
+                <img src={product.image_url || `https://via.placeholder.com/300?text=${product.name}`} alt={product.name} className="w-full h-48 object-cover" />
+                <div className="p-6">
+                  <h4 className="text-xl font-semibold text-chocolate-dark mb-2">{product.name}</h4>
+                  <p className="text-gray-700 text-sm mb-4">{product.description}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold text-chocolate-dark">R$ {product.price.toFixed(2)}</span>
+                    <Button
+                      onClick={() => handleAddToCart(product.id)}
+                      className="bg-pink-accent text-chocolate-dark hover:bg-pink-accent/90"
+                    >
+                      Adicionar
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
 
         {/* Bolos Section */}
         <section className="mb-16">
