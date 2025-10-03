@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
@@ -111,7 +111,6 @@
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.message || `HTTP error! status: ${response.status}`);
                 displayResult(resultElementId, data);
-                // 清空输入框
                 document.getElementById('create-username').value = '';
                 document.getElementById('create-email').value = '';
             } catch (error) {

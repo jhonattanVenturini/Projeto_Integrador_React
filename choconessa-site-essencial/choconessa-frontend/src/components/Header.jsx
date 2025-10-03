@@ -5,10 +5,10 @@ import { Link } from 'react-router-dom';
 
 const Header = ({ user, onLoginClick, onLogout, cartCount = 0 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   return (
+    
     <header className="bg-chocolate-gradient text-white shadow-lg">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
