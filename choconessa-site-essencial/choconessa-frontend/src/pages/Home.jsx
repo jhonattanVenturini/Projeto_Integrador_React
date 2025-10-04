@@ -6,8 +6,8 @@ const Home = () => {
   return (
     <div className="home-page">
       {/* Hero Section */}
-      <section className="relative bg-hero-gradient text-white py-20 md:py-32 lg:py-48 flex items-center justify-center">
-        <div className="container mx-auto px-4 text-center relative z-10">
+      <section className="relative bg-white text-white py-20 md:py-32 lg:py-48 flex items-center justify-center">
+        <div className="container mx-auto text-black px-4 text-center relative z-10">
           <h2 className="font-script text-5xl md:text-7xl font-bold mb-4 animate-fade-in-down">
             choconessa
           </h2>
