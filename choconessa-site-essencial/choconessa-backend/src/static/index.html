@@ -1,206 +1,231 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>choconessa-backend</title>
+    <title>User API Test</title>
     <style>
-        body { font-family: sans-serif; margin: 20px; }
-        .section { margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
-        h2 { margin-top: 0; }
-        label { display: inline-block; width: 80px; margin-bottom: 5px; }
-        input[type="text"], input[type="email"], input[type="number"] { margin-bottom: 10px; padding: 5px; width: 200px; }
-        button { padding: 8px 15px; margin-right: 10px; cursor: pointer; }
-        pre { background-color: #f4f4f4; padding: 10px; border: 1px solid #ddd; border-radius: 4px; white-space: pre-wrap; word-wrap: break-word; }
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        input[type="password"] {
+            padding: 5px;
+            width: 200px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 8px 15px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
     </style>
 </head>
+
 <body>
     <h1>User API Test</h1>
 
-    <!-- Get All Users -->
+    <!-- GET ALL USERS -->
     <div class="section">
-        <h2>Get All Users (GET /users)</h2>
+        <h2>Get All Users</h2>
         <button onclick="getUsers()">Get Users</button>
         <pre id="get-users-result"></pre>
     </div>
 
-    <!-- Create User -->
+    <!-- CREATE USER -->
     <div class="section">
-        <h2>Create User (POST /users)</h2>
-        <label for="create-username">Username:</label>
-        <input type="text" id="create-username" name="username"><br>
-        <label for="create-email">Email:</label>
-        <input type="email" id="create-email" name="email"><br>
+        <h2>Create User</h2>
+        <label>Username:</label><input type="text" id="create-username"><br>
+        <label>Email:</label><input type="email" id="create-email"><br>
+        <label>Password:</label><input type="password" id="create-password"><br>
         <button onclick="createUser()">Create User</button>
         <pre id="create-user-result"></pre>
     </div>
 
-    <!-- Get Single User -->
+    <!-- GET SINGLE USER -->
     <div class="section">
-        <h2>Get Single User (GET /users/&lt;id&gt;)</h2>
-        <label for="get-user-id">User ID:</label>
-        <input type="number" id="get-user-id" name="user_id"><br>
+        <h2>Get Single User</h2>
+        <label>User ID:</label><input type="number" id="get-user-id"><br>
         <button onclick="getUser()">Get User</button>
         <pre id="get-user-result"></pre>
     </div>
 
-    <!-- Update User -->
+    <!-- UPDATE USER -->
     <div class="section">
-        <h2>Update User (PUT /users/&lt;id&gt;)</h2>
-        <label for="update-user-id">User ID:</label>
-        <input type="number" id="update-user-id" name="user_id"><br>
-        <label for="update-username">New Username:</label>
-        <input type="text" id="update-username" name="username"><br>
-        <label for="update-email">New Email:</label>
-        <input type="email" id="update-email" name="email"><br>
+        <h2>Update User</h2>
+        <label>User ID:</label><input type="number" id="update-user-id"><br>
+        <label>Username:</label><input type="text" id="update-username"><br>
+        <label>Email:</label><input type="email" id="update-email"><br>
+        <label>Password:</label><input type="password" id="update-password"><br>
         <button onclick="updateUser()">Update User</button>
         <pre id="update-user-result"></pre>
     </div>
 
-    <!-- Delete User -->
+    <!-- DELETE USER -->
     <div class="section">
-        <h2>Delete User (DELETE /users/&lt;id&gt;)</h2>
-        <label for="delete-user-id">User ID:</label>
-        <input type="number" id="delete-user-id" name="user_id"><br>
+        <h2>Delete User</h2>
+        <label>User ID:</label><input type="number" id="delete-user-id"><br>
         <button onclick="deleteUser()">Delete User</button>
         <pre id="delete-user-result"></pre>
     </div>
 
     <script>
-        const API_BASE_URL = 'http://localhost:5000/users';
+        const API_BASE_URL = 'http://localhost:5000/api/users';
 
-        // Helper function to display results
-        function displayResult(elementId, data) {
-            document.getElementById(elementId).textContent = JSON.stringify(data, null, 2);
+        // Mostrar JSON bonitinho
+        function displayResult(id, data) {
+            document.getElementById(id).textContent = JSON.stringify(data, null, 2);
         }
 
-        // Helper function to display errors
-        function displayError(elementId, error) {
-            document.getElementById(elementId).textContent = `Error: ${error.message || error}`;
+        // Mostrar erros
+        function displayError(id, error) {
+            document.getElementById(id).textContent = `Error: ${error.message || error}`;
         }
 
         // GET /users
         async function getUsers() {
-            const resultElementId = 'get-users-result';
             try {
-                const response = await fetch(API_BASE_URL);
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                const data = await response.json();
-                displayResult(resultElementId, data);
-            } catch (error) {
-                displayError(resultElementId, error);
+                const res = await fetch(API_BASE_URL);
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || `HTTP error ${res.status}`);
+                displayResult('get-users-result', data);
+            } catch (err) {
+                displayError('get-users-result', err);
             }
         }
 
         // POST /users
         async function createUser() {
-            const resultElementId = 'create-user-result';
             const username = document.getElementById('create-username').value;
             const email = document.getElementById('create-email').value;
-            if (!username || !email) {
-                displayError(resultElementId, 'Username and email cannot be empty');
-                return;
-            }
+            const password = document.getElementById('create-password').value;
+            if (!username || !email || !password) return displayError('create-user-result', 'Todos os campos são obrigatórios');
+
             try {
-                const response = await fetch(API_BASE_URL, {
+                const res = await fetch(`http://localhost:5000/api/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, email })
+                    body: JSON.stringify({ username, email, password })
                 });
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.message || `HTTP error! status: ${response.status}`);
-                displayResult(resultElementId, data);
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || `HTTP error ${res.status}`);
+                displayResult('create-user-result', data);
                 document.getElementById('create-username').value = '';
                 document.getElementById('create-email').value = '';
-            } catch (error) {
-                displayError(resultElementId, error);
+                document.getElementById('create-password').value = '';
+            } catch (err) {
+                displayError('create-user-result', err);
             }
         }
 
         // GET /users/<id>
         async function getUser() {
-            const resultElementId = 'get-user-result';
-            const userId = document.getElementById('get-user-id').value;
-            if (!userId) {
-                displayError(resultElementId, 'User ID cannot be empty');
-                return;
-            }
+            const id = document.getElementById('get-user-id').value;
+            if (!id) return displayError('get-user-result', 'User ID obrigatório');
             try {
-                const response = await fetch(`${API_BASE_URL}/${userId}`);
-                 if (response.status === 404) throw new Error('User not found');
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                const data = await response.json();
-                displayResult(resultElementId, data);
-            } catch (error) {
-                displayError(resultElementId, error);
+                const res = await fetch(`${API_BASE_URL}/${id}`);
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || `HTTP error ${res.status}`);
+                displayResult('get-user-result', data);
+                document.getElementById('get-user-id').value = '';
+            } catch (err) {
+                displayError('get-user-result', err);
             }
         }
 
         // PUT /users/<id>
+        // PUT /users/<id>
         async function updateUser() {
-            const resultElementId = 'update-user-result';
-            const userId = document.getElementById('update-user-id').value;
+            // Convertendo o ID para número para garantir que o backend encontre o usuário
+            const id = Number(document.getElementById('update-user-id').value);
             const username = document.getElementById('update-username').value;
             const email = document.getElementById('update-email').value;
-            if (!userId) {
-                displayError(resultElementId, 'User ID cannot be empty');
-                return;
-            }
-            const updateData = {};
-            if (username) updateData.username = username;
-            if (email) updateData.email = email;
-            if (Object.keys(updateData).length === 0) {
-                 displayError(resultElementId, 'Please enter a username or email to update');
-                 return;
-            }
+            const password = document.getElementById('update-password').value;
+
+            if (!id) return displayError('update-user-result', 'User ID obrigatório ou inválido');
+
+            // Monta o body apenas com os campos que foram preenchidos
+            const body = {};
+            if (username) body.username = username;
+            if (email) body.email = email;
+            if (password) body.password = password;
+
+            if (Object.keys(body).length === 0) return displayError('update-user-result', 'Informe ao menos um campo para atualizar');
 
             try {
-                const response = await fetch(`${API_BASE_URL}/${userId}`, {
+                const res = await fetch(`http://localhost:5000/api/users/${id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(updateData)
+                    body: JSON.stringify(body)
                 });
-                if (response.status === 404) throw new Error('User not found');
-                const data = await response.json();
-                 if (!response.ok) throw new Error(data.message || `HTTP error! status: ${response.status}`);
-                displayResult(resultElementId, data);
-                 // Clear input fields
+
+                // Se o backend retornar 204 No Content, não tenta fazer res.json()
+                const data = res.status !== 204 ? await res.json() : { message: 'Usuário atualizado com sucesso' };
+
+                if (!res.ok) throw new Error(data.error || `HTTP error ${res.status}`);
+
+                displayResult('update-user-result', data);
+
+                // Limpa os campos do formulário
+                document.getElementById('update-user-id').value = '';
                 document.getElementById('update-username').value = '';
                 document.getElementById('update-email').value = '';
-            } catch (error) {
-                displayError(resultElementId, error);
+                document.getElementById('update-password').value = '';
+            } catch (err) {
+                displayError('update-user-result', err);
             }
         }
 
+
         // DELETE /users/<id>
         async function deleteUser() {
-            const resultElementId = 'delete-user-result';
-            const userId = document.getElementById('delete-user-id').value;
-            if (!userId) {
-                displayError(resultElementId, 'User ID cannot be empty');
-                return;
-            }
+            const id = document.getElementById('delete-user-id').value;
+            if (!id) return displayError('delete-user-result', 'User ID obrigatório');
+
             try {
-                const response = await fetch(`${API_BASE_URL}/${userId}`, {
-                    method: 'DELETE'
-                });
-                if (response.status === 404) throw new Error('User not found');
-                if (!response.ok && response.status !== 204) throw new Error(`HTTP error! status: ${response.status}`); // Allow 204
-                // 204 No Content indicates success
-                if (response.status === 204) {
-                     displayResult(resultElementId, { message: `User ID ${userId} has been successfully deleted` });
-                } else {
-                     // Try to read potential error message even on success-like status if not 204
-                     const data = await response.text();
-                     displayResult(resultElementId, data || { message: `Deletion successful, status code: ${response.status}` });
-                }
-                 // Clear input field
+                const res = await fetch(`${API_BASE_URL}/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || `HTTP error ${res.status}`);
+                displayResult('delete-user-result', data);
                 document.getElementById('delete-user-id').value = '';
-            } catch (error) {
-                displayError(resultElementId, error);
+            } catch (err) {
+                displayError('delete-user-result', err);
             }
         }
     </script>
 </body>
+
 </html>

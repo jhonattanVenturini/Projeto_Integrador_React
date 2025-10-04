@@ -3,7 +3,7 @@ from src.models.user import User, db
 
 user_bp = Blueprint('user', __name__)
 
-@user_bp.route('/users', methods=['POST'])
+@user_bp.route('/register', methods=['POST'])
 def register():
     try:
         data = request.json
@@ -78,3 +78,13 @@ def get_users():
 def get_user(user_id):
     user = User.query.get_or_404(user_id)
     return jsonify(user.to_dict())
+
+@user_bp.route('/users/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({'error': 'Usuário não encontrado'}), 404
+
+    db.session.delete(user)
+    db.session.commit()
+    return jsonify({'message': f'Usuário {user.username} deletado com sucesso'}), 200
