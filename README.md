@@ -1,18 +1,11 @@
 
 ## Integrantes : 
-<<<<<<< HEAD
 - Nome:  João Victor Aguiar | RA: 03.23.159148-1
 - Nome:  Jhonattan de Carvalho Romão Venturini | RA - 03.23.158791-3
 - Nome:  Eder Novais Silva | RA: 03.23.119647-7
 - Nome: Eric Novais Silva | RA: 03.23.119646-9
-- Nome:  | RA: 
-=======
-- Nome:  João Victor Aguiar  | RA: 03.23.159148-1
-- Nome:  Jhonattan de Carvalho Romão Venturini | RA - 03.23.158791-3
-- Nome:Eric Novais Silva  RA:03.23.119646-9  
-- Nome: Eder Novais Silva  | RA:03.23.119647-7
 - Nome: Gabriel Henrique Ferraz | RA: 03.23.117683-2
->>>>>>> developer
+
 ---
 # Choconessa - E-commerce de Chocolates 🍫
 
