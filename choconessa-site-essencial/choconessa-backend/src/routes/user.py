@@ -78,3 +78,27 @@ def get_users():
 def get_user(user_id):
     user = User.query.get_or_404(user_id)
     return jsonify(user.to_dict())
+
+@user_bp.route('/users/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    user = User.query.get(user_id)  # se estiver no SQLAlchemy 2.x: db.session.get(User, user_id)
+    if not user:
+        return jsonify({'error': 'Usuário não encontrado'}), 404
+
+    db.session.delete(user)
+    db.session.commit()
+    return jsonify({'message': f'Usuário {user.username} deletado com sucesso'}), 200
+
+@user_bp.route('/users/<int:user_id>', methods=['PUT'])
+def update_user(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({'error': 'Usuário não encontrado'}), 404
+
+    data = request.json
+    if 'username' in data: user.username = data['username']
+    if 'email' in data: user.email = data['email']
+    if 'password' in data: user.set_password(data['password'])
+
+    db.session.commit()
+    return jsonify({'message': 'Usuário atualizado com sucesso', 'user': user.to_dict()}), 200
