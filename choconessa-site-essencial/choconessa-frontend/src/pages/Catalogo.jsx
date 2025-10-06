@@ -62,21 +62,96 @@ const Catalogo = ({ user, onLoginRequired, onCartUpdate }) => {
   if (error) {
     return <div className="text-center py-16 text-red-500">Erro: {error}</div>;
   }
-
-  const bolos = products.filter(product => product.category === 'bolos');
-  const trufas = products.filter(product => product.category === 'trufas');
-  const cones = products.filter(product => product.category === 'cones');
+ const bolos = products.filter(product => product.category === 'bolos');
+  const cones_premium = products.filter(product => product.category === 'cones_premium');
+  const cones_especiais = products.filter(product => product.category === 'cones_especiais');
+  const brownies_tradicionais = products.filter(product => product.category === 'brownies_premium');
+  const brownies_premium = products.filter(product => product.category === 'brownies_tradicionais');
+  const brownies_especiais = products.filter(product => product.category === 'brownies_especiais');
 
   return (
     <div className="catalogo-page py-16 bg-gray-50">
       <div className="container mx-auto px-4">
         <h2 className="text-5xl font-script text-center text-chocolate-dark mb-12">Nosso Catálogo</h2>
 
+        <section className="mb-16">
+          <h3 className="text-4xl font-bold text-chocolate-dark mb-8 text-center md:text-left">Brownies Especiais</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {brownies_especiais.map(product => (
+              <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover-lift transition-all">
+                <img src={product.image_url || `https://via.placeholder.com/300?text=${product.name}`} alt={product.name} className="w-full h-48 object-cover" />
+                <div className="p-6">
+                  <h4 className="text-xl font-semibold text-chocolate-dark mb-2">{product.name}</h4>
+                  <p className="text-gray-700 text-sm mb-4">{product.description}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold text-chocolate-dark">R$ {product.price.toFixed(2)}</span>
+                    <Button
+                      onClick={() => handleAddToCart(product.id)}
+                      className="bg-pink-accent text-chocolate-dark hover:bg-pink-accent/90"
+                    >
+                      Adicionar
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Brownies Premium Section */} 
+      <section className="mb-16">
+          <h3 className="text-4xl font-bold text-chocolate-dark mb-8 text-center md:text-left">Brownies Premium</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {brownies_premium.map(product => (
+              <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover-lift transition-all">
+                <img src={product.image_url || `https://via.placeholder.com/300?text=${product.name}`} alt={product.name} className="w-full h-48 object-cover" />
+                <div className="p-6">
+                  <h4 className="text-xl font-semibold text-chocolate-dark mb-2">{product.name}</h4>
+                  <p className="text-gray-700 text-sm mb-4">{product.description}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold text-chocolate-dark">R$ {product.price.toFixed(2)}</span>
+                    <Button
+                      onClick={() => handleAddToCart(product.id)}
+                      className="bg-pink-accent text-chocolate-dark hover:bg-pink-accent/90"
+                    >
+                      Adicionar
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+        {/* Brownies Tradicionais */}
+        <section className="mb-16">
+          <h3 className="text-4xl font-bold text-chocolate-dark mb-8 text-center md:text-left">Brownies Tradicionais</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {brownies_tradicionais.map(product => (
+              <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover-lift transition-all">
+                <img src={product.image_url || `https://via.placeholder.com/300?text=${product.name}`} alt={product.name} className="w-full h-48 object-cover" />
+                <div className="p-6">
+                  <h4 className="text-xl font-semibold text-chocolate-dark mb-2">{product.name}</h4>
+                  <p className="text-gray-700 text-sm mb-4">{product.description}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold text-chocolate-dark">R$ {product.price.toFixed(2)}</span>
+                    <Button
+                      onClick={() => handleAddToCart(product.id)}
+                      className="bg-pink-accent text-chocolate-dark hover:bg-pink-accent/90"
+                    >
+                      Adicionar
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
             {/* Cones */}
         <section className="mb-16">
-          <h3 className="text-4xl font-bold text-chocolate-dark mb-8 text-center md:text-left">Cones</h3>
+          <h3 className="text-4xl font-bold text-chocolate-dark mb-8 text-center md:text-left">Cones Premium</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {cones.map(product => (
+            {cones_premium.map(product => (
               <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover-lift transition-all">
                 <img src={product.image_url || `https://via.placeholder.com/300?text=${product.name}`} alt={product.name} className="w-full h-48 object-cover" />
                 <div className="p-6">
@@ -97,36 +172,11 @@ const Catalogo = ({ user, onLoginRequired, onCartUpdate }) => {
           </div>
         </section>
 
-        {/* Bolos Section */}
-        <section className="mb-16">
-          <h3 className="text-4xl font-bold text-chocolate-dark mb-8 text-center md:text-left">Bolos</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {bolos.map(product => (
-              <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover-lift transition-all">
-                <img src={product.image_url || `https://via.placeholder.com/300?text=${product.name}`} alt={product.name} className="w-full h-48 object-cover" />
-                <div className="p-6">
-                  <h4 className="text-xl font-semibold text-chocolate-dark mb-2">{product.name}</h4>
-                  <p className="text-gray-700 text-sm mb-4">{product.description}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold text-chocolate-dark">R$ {product.price.toFixed(2)}</span>
-                    <Button
-                      onClick={() => handleAddToCart(product.id)}
-                      className="bg-pink-accent text-chocolate-dark hover:bg-pink-accent/90"
-                    >
-                      Adicionar
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Trufas Section */}
+        {/* Cones Especiais */}
         <section>
-          <h3 className="text-4xl font-bold text-chocolate-dark mb-8 text-center md:text-left">Trufas</h3>
+          <h3 className="text-4xl font-bold text-chocolate-dark mb-8 text-center md:text-left">Cones Especiais</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {trufas.map(product => (
+            {cones_especiais.map(product => (
               <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover-lift transition-all">
                 <img src={product.image_url || `https://via.placeholder.com/300?text=${product.name}`} alt={product.name} className="w-full h-48 object-cover" />
                 <div className="p-6">
@@ -152,4 +202,5 @@ const Catalogo = ({ user, onLoginRequired, onCartUpdate }) => {
 };
 
 export default Catalogo;
+
 
