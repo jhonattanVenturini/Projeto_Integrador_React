@@ -67,7 +67,7 @@ const Catalogo = ({ user, onLoginRequired, onCartUpdate }) => {
   const cones_especiais = products.filter(product => product.category === 'cones_especiais');
   const brownies_tradicionais = products.filter(product => product.category === 'brownies_premium');
   const brownies_premium = products.filter(product => product.category === 'brownies_tradicionais');
-  const brownies_especiais = products.filter(product => product.category === 'brownies_especiais');
+  const brownies_especiais = products.filter(product => product.category === 'brownies_especiais'); 
 
   return (
     <div className="catalogo-page py-16 bg-gray-50">
