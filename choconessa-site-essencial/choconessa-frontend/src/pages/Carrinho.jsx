@@ -9,6 +9,8 @@ const Carrinho = ({ user, onLoginRequired, onCartUpdate }) => {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [deliveryAddress, setDeliveryAddress] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("");
 
   useEffect(() => {
     if (user) {
@@ -57,9 +59,30 @@ const Carrinho = ({ user, onLoginRequired, onCartUpdate }) => {
   };
 
   const handleCheckout = () => {
-    // Lógica de checkout aqui
-    toast.success('Compra finalizada com sucesso! (Funcionalidade completa a ser implementada)');
-    // Após o checkout, você pode limpar o carrinho no backend e recarregar
+    if (!deliveryAddress) {
+      toast.error("Por favor, preencha o endereço de entrega.");
+      return;
+    }
+    if (!paymentMethod) {
+      toast.error("Por favor, selecione uma forma de pagamento.");
+      return;
+    }
+
+    const phoneNumber = "5511974232033"; // Substitua pelo número de telefone do responsável pelas vendas
+    let message = `*Novo Pedido!*\n\n`;
+    message += `*Itens do Pedido:*\n`;
+    cartItems.forEach(item => {
+      message += `- ${item.product?.name} (x${item.quantity}) - R$ ${(item.product?.price * item.quantity).toFixed(2)}\n`;
+    });
+    message += `\n*Total:* R$ ${total.toFixed(2)}\n`;
+    message += `*Endereço de Entrega:* ${deliveryAddress}\n`;
+    message += `*Forma de Pagamento:* ${paymentMethod === 'pix' ? 'PIX' : paymentMethod === 'credit_card' ? 'Cartão de Crédito' : paymentMethod === 'debit_card' ? 'Cartão de Débito' : paymentMethod === 'cash' ? 'Dinheiro' : paymentMethod}\n`;
+
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+
+    toast.success("Pedido enviado para o WhatsApp! Aguarde a confirmação.");
+    // Aqui você pode adicionar a lógica para limpar o carrinho no backend, se necessário
     // clearCart();
   };
 
@@ -140,6 +163,32 @@ const Carrinho = ({ user, onLoginRequired, onCartUpdate }) => {
                 <div className="flex justify-between text-lg font-semibold text-gray-800">
                   <span>Frete:</span>
                   <span>Grátis</span> {/* Exemplo, pode ser dinâmico */}
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="deliveryAddress" className="block text-sm font-medium text-gray-700 mb-1">Endereço de Entrega:</label>
+                  <input
+                    type="text"
+                    id="deliveryAddress"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-pink-accent focus:border-pink-accent"
+                    value={deliveryAddress}
+                    onChange={(e) => setDeliveryAddress(e.target.value)}
+                    placeholder="Rua, Número, Bairro, Cidade, Estado, CEP"
+                  />
+                </div>
+                <div className="mb-6">
+                  <label htmlFor="paymentMethod" className="block text-sm font-medium text-gray-700 mb-1">Forma de Pagamento:</label>
+                  <select
+                    id="paymentMethod"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-pink-accent focus:border-pink-accent"
+                    value={paymentMethod}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                  >
+                    <option value="">Selecione uma forma de pagamento</option>
+                    <option value="pix">PIX</option>
+                    <option value="credit_card">Cartão de Crédito</option>
+                    <option value="debit_card">Cartão de Débito</option>
+                    <option value="cash">Dinheiro</option>
+                  </select>
                 </div>
                 <div className="border-t border-gray-200 pt-4 flex justify-between text-xl font-bold text-chocolate-dark">
                   <span>Total:</span>
