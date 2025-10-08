@@ -1,72 +1,88 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button.jsx";
 import { ShoppingCart, User, Menu, X } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Header = ({ user, onLoginClick, onLogout, cartCount = 0 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const location = useLocation();
+
+  const menuItems = [
+    { label: "HOME", path: "/" },
+    { label: "CATÁLOGO", path: "/catalogo" },
+    { label: "SOBRE NÓS", path: "/sobre" },
+    { label: "CONTATOS", path: "/contatos" },
+  ];
 
   return (
-    <header className="bg-[#7A4636] text-white py-3 shadow-md rounded-b-2xl">
-      <div className="mx-[15px] md:mx-auto container px-0 md:px-4 py-4">
-        {/* Grid de 3 colunas */}
+    <header className="bg-[#7A4636] text-[#F5EDE4] py-3 shadow-md rounded-b-[60px]">
+      <div className="container mx-auto px-4 md:px-12 py-3">
         <div className="grid grid-cols-3 items-center">
-          {/* Coluna 1 - Navegação Desktop */}
-          <nav className="hidden md:flex space-x-8 justify-start">
-            <Link to="/" className="hover:text-pink-accent transition-colors font-medium">
-              HOME
-            </Link>
-            <Link to="/catalogo" className="hover:text-pink-accent transition-colors font-medium">
-              CATÁLOGO
-            </Link>
-            <Link to="/sobre" className="hover:text-pink-accent transition-colors font-medium">
-              SOBRE NÓS
-            </Link>
-            <Link to="/contatos" className="hover:text-pink-accent transition-colors font-medium">
-              CONTATOS
-            </Link>
+          {/* Navegação Desktop */}
+          <nav className="hidden md:flex space-x-10 justify-start">
+            {menuItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`relative font-semibold tracking-wide transition-all duration-300 pb-1
+                  ${
+                    location.pathname === item.path
+                      ? "text-[#F5EDE4] after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-[#E09AA2] after:rounded-full"
+                      : "hover:text-[#E09AA2]"
+                  }`}
+              >
+                {item.label}
+              </Link>
+            ))}
           </nav>
 
-          {/* Coluna 2 - Logo (sempre centralizada) */}
-          <div className="flex justify-center col-span-1">
+          {/* Logo centralizada */}
+          <div className="flex justify-center">
             <Link to="/" className="flex flex-col items-center">
               <div className="w-24 h-24 md:w-28 md:h-28 flex items-center justify-center">
-                <img src="/choconessa_02.png" alt="Logo Choconessa" className="w-full h-full object-contain" />
+                <img
+                  src="/choconessa_02.png"
+                  alt="Logo Choconessa"
+                  className="w-full h-full object-contain"
+                />
               </div>
             </Link>
           </div>
 
-          {/* Coluna 3 - User e Carrinho (desktop) */}
-          <div className="hidden md:flex items-center space-x-4 justify-end">
+          {/* Área de usuário e carrinho (desktop) */}
+          <div className="hidden md:flex items-center space-x-6 justify-end">
             {user ? (
-              <div className="flex items-center space-x-4">
-                <span className="text-sm">Olá, {user.username}!</span>
+              <div className="flex items-center space-x-3">
+                <span className="text-sm font-medium">Olá, {user.username}!</span>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={onLogout}
-                  className="text-white hover:bg-white/20"
+                  className="text-[#F5EDE4] hover:bg-white/10"
                 >
                   <User className="w-4 h-4 mr-2" /> Sair
                 </Button>
               </div>
             ) : (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onLoginClick}
-                className="text-white hover:bg-white/20"
-              >
-                <User className="w-4 h-4 mr-2" /> Faça o login ou cadastre-se
-              </Button>
+              <div className="flex items-center space-x-2">
+                <User className="w-5 h-5 opacity-80" />
+                <button
+                  onClick={onLoginClick}
+                  className="text-left text-sm leading-tight hover:text-[#E09AA2] transition"
+                >
+                  <span className="font-bold">Olá! Faça o login</span>
+                  <br />
+                  <span className="text-xs opacity-90">ou cadastre-se</span>
+                </button>
+              </div>
             )}
 
             <Link to="/carrinho">
-              <Button variant="ghost" size="sm" className="text-white hover:bg-white/20 relative">
-                <ShoppingCart className="w-4 h-4" />
+              <Button variant="ghost" size="sm" className="relative text-[#F5EDE4] hover:bg-white/10">
+                <ShoppingCart className="w-5 h-5" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-pink-accent text-chocolate-dark text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 bg-[#E09AA2] text-[#7A4636] text-xs rounded-full w-5 h-5 flex items-center justify-center">
                     {cartCount}
                   </span>
                 )}
@@ -74,13 +90,13 @@ const Header = ({ user, onLoginClick, onLogout, cartCount = 0 }) => {
             </Link>
           </div>
 
-          {/* Botão Mobile Menu e Carrinho (visível apenas no mobile) */}
+          {/* Ícones Mobile */}
           <div className="flex md:hidden justify-end items-center space-x-2">
             <Link to="/carrinho">
               <Button variant="ghost" size="sm" className="text-white hover:bg-white/20 relative">
-                <ShoppingCart className="w-5 h-5" />
+                <ShoppingCart className="w-6 h-6" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-pink-accent text-chocolate-dark text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 bg-[#E09AA2] text-[#7A4636] text-xs rounded-full w-5 h-5 flex items-center justify-center">
                     {cartCount}
                   </span>
                 )}
@@ -92,72 +108,60 @@ const Header = ({ user, onLoginClick, onLogout, cartCount = 0 }) => {
           </div>
         </div>
 
-        {/* Menu Mobile */}
-        {isMenuOpen && (
-          <div className="md:hidden mt-4 pb-4 border-t border-white/20 text-center">
-            <nav className="flex flex-col space-y-4 mt-4">
+        {/* Menu Mobile com animação */}
+        <div
+          className={`md:hidden transition-all duration-300 overflow-hidden ${
+            isMenuOpen ? "max-h-96 mt-4 pb-4 border-t border-white/20" : "max-h-0"
+          }`}
+        >
+          <nav className="flex flex-col space-y-4 mt-4 text-center">
+            {menuItems.map((item) => (
               <Link
-                to="/"
-                className="hover:text-pink-accent transition-colors font-medium"
+                key={item.path}
+                to={item.path}
                 onClick={() => setIsMenuOpen(false)}
+                className={`font-medium transition-colors ${
+                  location.pathname === item.path
+                    ? "text-[#E09AA2]"
+                    : "hover:text-[#E09AA2]"
+                }`}
               >
-                HOME
+                {item.label}
               </Link>
-              <Link
-                to="/catalogo"
-                className="hover:text-pink-accent transition-colors font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                CATÁLOGO
-              </Link>
-              <Link
-                to="/sobre"
-                className="hover:text-pink-accent transition-colors font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                SOBRE NÓS
-              </Link>
-              <Link
-                to="/contatos"
-                className="hover:text-pink-accent transition-colors font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                CONTATOS
-              </Link>
+            ))}
 
-              <div className="pt-4 border-t border-white/20">
-                {user ? (
-                  <div className="space-y-2">
-                    <p className="text-sm">Olá, {user.username}!</p>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        onLogout();
-                        setIsMenuOpen(false);
-                      }}
-                      className="text-white hover:bg-white/20 w-full justify-start"
-                    >
-                      <User className="w-4 h-4 mr-2" /> Sair
-                    </Button>
-                  </div>
-                ) : (
+            <div className="pt-4 border-t border-white/20">
+              {user ? (
+                <div className="space-y-2">
+                  <p className="text-sm">Olá, {user.username}!</p>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => {
-                      onLoginClick();
+                      onLogout();
                       setIsMenuOpen(false);
                     }}
-                    className="text-white hover:bg-white/20 w-full justify-start"
+                    className="text-white hover:bg-white/20 w-full justify-center"
                   >
-                    <User className="w-4 h-4 mr-2" /> Faça o login ou cadastre-se
+                    <User className="w-4 h-4 mr-2" /> Sair
                   </Button>
-                )}
-              </div>
-            </nav>
-          </div>
-        )}
+                </div>
+              ) : (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    onLoginClick();
+                    setIsMenuOpen(false);
+                  }}
+                  className="text-white hover:bg-white/20 w-full justify-center"
+                >
+                  <User className="w-4 h-4 mr-2" /> Faça o login ou cadastre-se
+                </Button>
+              )}
+            </div>
+          </nav>
+        </div>
       </div>
     </header>
   );
