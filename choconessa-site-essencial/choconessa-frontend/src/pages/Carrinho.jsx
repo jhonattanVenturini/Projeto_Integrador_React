@@ -9,7 +9,15 @@ const Carrinho = ({ user, onLoginRequired, onCartUpdate }) => {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [deliveryAddress, setDeliveryAddress] = useState("");
+
+  // Campos de endereço
+  const [street, setStreet] = useState("");
+  const [number, setNumber] = useState("");
+  const [neighborhood, setNeighborhood] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [cep, setCep] = useState("");
+
   const [paymentMethod, setPaymentMethod] = useState("");
 
   useEffect(() => {
@@ -20,19 +28,16 @@ const Carrinho = ({ user, onLoginRequired, onCartUpdate }) => {
     }
   }, [user]);
 
+  // Busca itens do carrinho
   const fetchCart = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/cart', {
-        credentials: 'include',
-      });
-      if (!response.ok) {
-        throw new Error('Erro ao buscar o carrinho');
-      }
+      const response = await fetch('/api/cart', { credentials: 'include' });
+      if (!response.ok) throw new Error('Erro ao buscar o carrinho');
       const data = await response.json();
       setCartItems(data.items);
       setTotal(data.total);
-      onCartUpdate(); // Atualiza o contador do carrinho no Header
+      onCartUpdate();
     } catch (err) {
       setError(err.message);
       toast.error('Erro ao carregar o carrinho.');
@@ -41,34 +46,60 @@ const Carrinho = ({ user, onLoginRequired, onCartUpdate }) => {
     }
   };
 
+  // Remove item do carrinho
   const handleRemoveItem = async (itemId) => {
     try {
       const response = await fetch(`/api/cart/remove/${itemId}`, {
         method: 'DELETE',
         credentials: 'include',
       });
-      if (!response.ok) {
-        throw new Error('Erro ao remover item do carrinho');
-      }
+      if (!response.ok) throw new Error('Erro ao remover item do carrinho');
       toast.success('Item removido do carrinho!');
-      fetchCart(); // Recarrega o carrinho após a remoção
+      fetchCart();
     } catch (err) {
       toast.error(err.message);
       console.error('Erro ao remover item:', err);
     }
   };
 
-  const handleCheckout = () => {
-    if (!deliveryAddress) {
-      toast.error("Por favor, preencha o endereço de entrega.");
-      return;
-    }
-    if (!paymentMethod) {
-      toast.error("Por favor, selecione uma forma de pagamento.");
+  // Busca endereço pelo CEP usando ViaCEP (gratuito)
+  const fetchAddressFromCep = async (cepInput) => {
+    if (!cepInput) return;
+    const cepNumber = cepInput.replace(/\D/g, ""); // remove tudo que não é número
+    if (cepNumber.length !== 8) {
+      toast.error("CEP inválido.");
       return;
     }
 
-    const phoneNumber = "5511974232033"; // Substitua pelo número de telefone do responsável pelas vendas
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${cepNumber}/json/`);
+      const data = await response.json();
+
+      if (!data.erro) {
+        setStreet(data.logradouro || "");
+        setNeighborhood(data.bairro || "");
+        setCity(data.localidade || "");
+        setState(data.uf || "");
+        setCep(cepNumber);
+      } else {
+        toast.error("CEP não encontrado.");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Erro ao buscar endereço pelo CEP.");
+    }
+  };
+
+  // Finaliza compra e envia para WhatsApp
+  const handleCheckout = () => {
+    const deliveryAddress = `${street} ${number}, ${neighborhood}, ${city}, ${state}, ${cep}`;
+
+    if (!street || !number || !neighborhood || !city || !state || !cep) {
+      toast.error("Por favor, preencha o endereço de entrega completo.");
+      return;
+    }
+
+    const phoneNumber = "5511974232033";
     let message = `*Novo Pedido!*\n\n`;
     message += `*Itens do Pedido:*\n`;
     cartItems.forEach(item => {
@@ -76,14 +107,11 @@ const Carrinho = ({ user, onLoginRequired, onCartUpdate }) => {
     });
     message += `\n*Total:* R$ ${total.toFixed(2)}\n`;
     message += `*Endereço de Entrega:* ${deliveryAddress}\n`;
-    message += `*Forma de Pagamento:* ${paymentMethod === 'pix' ? 'PIX' : paymentMethod === 'credit_card' ? 'Cartão de Crédito' : paymentMethod === 'debit_card' ? 'Cartão de Débito' : paymentMethod === 'cash' ? 'Dinheiro' : paymentMethod}\n`;
+    message += `*Forma de Pagamento:* ${paymentMethod || "Não selecionado"}\n`;
 
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
-
     toast.success("Pedido enviado para o WhatsApp! Aguarde a confirmação.");
-    // Aqui você pode adicionar a lógica para limpar o carrinho no backend, se necessário
-    // clearCart();
   };
 
   if (!user) {
@@ -97,13 +125,8 @@ const Carrinho = ({ user, onLoginRequired, onCartUpdate }) => {
     );
   }
 
-  if (loading) {
-    return <div className="text-center py-16 text-chocolate-dark">Carregando carrinho...</div>;
-  }
-
-  if (error) {
-    return <div className="text-center py-16 text-red-500">Erro: {error}</div>;
-  }
+  if (loading) return <div className="text-center py-16 text-chocolate-dark">Carregando carrinho...</div>;
+  if (error) return <div className="text-center py-16 text-red-500">Erro: {error}</div>;
 
   return (
     <div className="carrinho-page py-16 bg-gray-50 min-h-[calc(100vh-200px)]">
@@ -114,13 +137,12 @@ const Carrinho = ({ user, onLoginRequired, onCartUpdate }) => {
           <div className="text-center text-xl text-gray-700">
             <p>Seu carrinho está vazio.</p>
             <Link to="/catalogo">
-              <Button className="mt-6 bg-chocolate-dark hover:bg-chocolate-dark/90 text-white">
-                Explorar Produtos
-              </Button>
+              <Button className="mt-6 bg-chocolate-dark hover:bg-chocolate-dark/90 text-white">Explorar Produtos</Button>
             </Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Itens do carrinho */}
             <div className="lg:col-span-2 bg-white p-6 rounded-lg shadow-md">
               <h3 className="text-2xl font-bold text-chocolate-dark mb-6">Itens no Carrinho</h3>
               <div className="space-y-4">
@@ -153,53 +175,81 @@ const Carrinho = ({ user, onLoginRequired, onCartUpdate }) => {
               </div>
             </div>
 
+            {/* Resumo do pedido */}
             <div className="lg:col-span-1 bg-white p-6 rounded-lg shadow-md h-fit">
               <h3 className="text-2xl font-bold text-chocolate-dark mb-6">Resumo do Pedido</h3>
               <div className="space-y-4">
-                <div className="flex justify-between text-lg font-semibold text-gray-800">
-                  <span>Subtotal:</span>
-                  <span>R$ {total.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-lg font-semibold text-gray-800">
-                  <span>Frete:</span>
-                  <span>Grátis</span> {/* Exemplo, pode ser dinâmico */}
-                </div>
-                <div className="mb-4">
-                  <label htmlFor="deliveryAddress" className="block text-sm font-medium text-gray-700 mb-1">Endereço de Entrega:</label>
+
+                {/* Campos de endereço */}
+                {["Rua", "Número", "Bairro", "Cidade", "Estado"].map((label, index) => {
+                  const valueMap = { "Rua": street, "Número": number, "Bairro": neighborhood, "Cidade": city, "Estado": state };
+                  const setterMap = { "Rua": setStreet, "Número": setNumber, "Bairro": setNeighborhood, "Cidade": setCity, "Estado": setState };
+                  return (
+                    <div className="mb-4" key={index}>
+                      <label className="block text-sm font-medium text-gray-700">{label}:</label>
+                      <input
+                        type="text"
+                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-pink-accent focus:border-pink-accent"
+                        value={valueMap[label]}
+                        onChange={(e) => setterMap[label](e.target.value)}
+                      />
+                    </div>
+                  );
+                })}
+
+                {/* CEP */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700">CEP:</label>
                   <input
                     type="text"
-                    id="deliveryAddress"
                     className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-pink-accent focus:border-pink-accent"
-                    value={deliveryAddress}
-                    onChange={(e) => setDeliveryAddress(e.target.value)}
-                    placeholder="Rua, Número, Bairro, Cidade, Estado, CEP"
+                    value={cep}
+                    onChange={(e) => {
+                      const newCep = e.target.value;
+                      setCep(newCep);
+
+                      // Limpa campos de endereço se o CEP estiver vazio
+                      if (!newCep) {
+                        setStreet("");
+                        setNumber("");
+                        setNeighborhood("");
+                        setCity("");
+                        setState("");
+                      }
+                    }}
+                    onBlur={() => fetchAddressFromCep(cep)}
                   />
                 </div>
+
+                {/* Forma de pagamento */}
                 <div className="mb-6">
-                  <label htmlFor="paymentMethod" className="block text-sm font-medium text-gray-700 mb-1">Forma de Pagamento:</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Forma de Pagamento:</label>
                   <select
-                    id="paymentMethod"
                     className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-pink-accent focus:border-pink-accent"
                     value={paymentMethod}
                     onChange={(e) => setPaymentMethod(e.target.value)}
                   >
                     <option value="">Selecione uma forma de pagamento</option>
-                    <option value="pix">PIX</option>
-                    <option value="credit_card">Cartão de Crédito</option>
-                    <option value="debit_card">Cartão de Débito</option>
-                    <option value="cash">Dinheiro</option>
+                    <option value="PIX">PIX</option>
+                    <option value="Cartão de Crédito">Cartão de Crédito</option>
+                    <option value="Cartão de Débito">Cartão de Débito</option>
+                    <option value="Dinheiro">Dinheiro</option>
                   </select>
                 </div>
+
+                {/* Total */}
                 <div className="border-t border-gray-200 pt-4 flex justify-between text-xl font-bold text-chocolate-dark">
                   <span>Total:</span>
                   <span>R$ {total.toFixed(2)}</span>
                 </div>
+
                 <Button
                   onClick={handleCheckout}
                   className="w-full bg-pink-accent hover:bg-pink-accent/90 text-chocolate-dark text-lg py-3 mt-6"
                 >
                   Finalizar Compra
                 </Button>
+
               </div>
             </div>
           </div>
@@ -210,4 +260,3 @@ const Carrinho = ({ user, onLoginRequired, onCartUpdate }) => {
 };
 
 export default Carrinho;
-
